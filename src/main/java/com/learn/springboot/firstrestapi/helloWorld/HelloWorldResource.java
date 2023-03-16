@@ -11,4 +11,15 @@ public class HelloWorldResource {
 	String helloWorld() { 
 		return "Hello World!";
 	}
+	
+	@RequestMapping("/hello-world-bean")
+	HelloWorldBean helloWorldBean() { 
+		return new HelloWorldBean("Hello World!");
+	}
+	
+	@RequestMapping("/hello-world-path-variable/{name}/message/{message}")
+	HelloWorldBean helloWorldPathVariable(@PathVariable String name,
+											@PathVariable String message) { 
+		return new HelloWorldBean("Hello, "+name+"! "+message);
+	}
 }
