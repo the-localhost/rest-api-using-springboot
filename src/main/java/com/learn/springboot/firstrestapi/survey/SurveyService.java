@@ -3,6 +3,9 @@ package com.learn.springboot.firstrestapi.survey;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import org.springframework.stereotype.Service;
 
@@ -29,5 +32,18 @@ public class SurveyService {
 
 	public List<Survey> retrieveAllSurveys() {
 		return surveys;
+	}
+
+	public Survey retrieveSurveyById(String surveyId) {
+		Predicate<? super Survey> predicate = 
+				survey -> survey.getId().compareTo(surveyId)==0;
+		
+		Optional<Survey> optionalSurvey = surveys.stream().
+									filter(predicate).findFirst();
+		if(optionalSurvey.isEmpty()) {
+			return null;
+		}
+		
+		return optionalSurvey.get();
 	}
 }
