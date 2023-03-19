@@ -8,50 +8,48 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-@RestController 
+@RestController
 public class SurveyResource {
-	
+
 	public SurveyResource(SurveyService surveyService) {
 		super();
 		this.surveyService = surveyService;
 	}
 
 	private SurveyService surveyService;
-	
+
 	@RequestMapping("/surveys")
-	public List<Survey> retrieveAllSurveys(){
+	public List<Survey> retrieveAllSurveys() {
 		return surveyService.retrieveAllSurveys();
 	}
-	
+
 	@RequestMapping("/surveys/{surveyId}")
-	public Survey retrieveSurveyById(@PathVariable String surveyId){
+	public Survey retrieveSurveyById(@PathVariable String surveyId) {
 		Survey survey = surveyService.retrieveSurveyById(surveyId);
-		if(survey==null) {
+		if (survey == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		}
 		return survey;
 	}
-	
+
 	@RequestMapping("/surveys/{surveyId}/questions")
-	public List<Question> retrieveSurveyQuestions(
-			@PathVariable String surveyId){
+	public List<Question> retrieveSurveyQuestions(@PathVariable String surveyId) {
 		List<Question> questions = surveyService.retrieveSurveyQuestions(surveyId);
-		if(questions==null) {
+		if (questions == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		}
-		
+
 		return questions;
 	}
-	
+
 	@RequestMapping("/surveys/{surveyId}/questions/{questionId}")
-	public Question retrieveSurveyQuestionById(
-			@PathVariable String surveyId, @PathVariable String questionId){
+	public Question retrieveSurveyQuestionById(@PathVariable String surveyId, @PathVariable String questionId) {
 		Question questionById = surveyService.retrieveSurveyQuestionById(surveyId, questionId);
-		
-		if(questionById==null) {
+
+		if (questionById == null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		}
-		
+
 		return questionById;
 	}
 }

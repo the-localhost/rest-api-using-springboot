@@ -47,15 +47,18 @@ public class SurveyService {
 
 	public List<Question> retrieveSurveyQuestions(String surveyId) {
 		Survey survey = retrieveSurveyById(surveyId);
+		if(survey==null) return null;
 		return survey.getQuestions();
 	}
 
 	public Question retrieveSurveyQuestionById(String surveyId, String questionId) {
-		List<Question> questions = retrieveSurveyQuestions(surveyId);
+		List<Question> surveyQuestions = retrieveSurveyQuestions(surveyId);
+		
+		if(surveyQuestions==null) return null;
 		
 		Predicate<? super Question> predicate = 
 				question -> question.getId().equalsIgnoreCase(questionId);
-		Optional<Question> optionalQuestion = questions.stream().filter(predicate).findFirst();
+		Optional<Question> optionalQuestion = surveyQuestions.stream().filter(predicate).findFirst();
 		
 		if(optionalQuestion.isEmpty()) {
 			return null;
