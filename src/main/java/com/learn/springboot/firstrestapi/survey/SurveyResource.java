@@ -24,11 +24,17 @@ public class SurveyResource {
 	}
 	
 	@RequestMapping("/surveys/{surveyId}")
-	public Survey retrieveAllSurveys(@PathVariable String surveyId){
+	public Survey retrieveSurveyById(@PathVariable String surveyId){
 		Survey survey = surveyService.retrieveSurveyById(surveyId);
 		if(survey==null) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 		}
 		return survey;
+	}
+	
+	@RequestMapping("/surveys/{surveyId}/questions")
+	public List<Question> retrieveSurveyQuestions(
+			@PathVariable String surveyId){
+		return surveyService.retrieveSurveyQuestions(surveyId);
 	}
 }

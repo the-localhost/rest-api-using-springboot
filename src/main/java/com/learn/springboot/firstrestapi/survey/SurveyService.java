@@ -46,4 +46,9 @@ public class SurveyService {
 		
 		return optionalSurvey.get();
 	}
+
+	public List<Question> retrieveSurveyQuestions(String surveyId) {
+		Survey survey = retrieveSurveyById(surveyId);
+		return survey.getQuestions();
+	}
 }
