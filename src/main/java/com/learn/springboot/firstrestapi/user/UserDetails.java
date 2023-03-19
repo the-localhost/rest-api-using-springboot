@@ -12,6 +12,8 @@ public class UserDetails {
 	
 	private String name;
 	private String role;
+	
+	public UserDetails() {}
 
 	public UserDetails(String name, String role) {
 		super();
