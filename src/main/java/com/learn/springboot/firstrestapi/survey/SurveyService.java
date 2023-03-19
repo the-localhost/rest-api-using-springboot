@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
-
 import org.springframework.stereotype.Service;
 
 @Service
@@ -36,7 +34,7 @@ public class SurveyService {
 
 	public Survey retrieveSurveyById(String surveyId) {
 		Predicate<? super Survey> predicate = 
-				survey -> survey.getId().compareTo(surveyId)==0;
+				survey -> survey.getId().equalsIgnoreCase(surveyId);
 		
 		Optional<Survey> optionalSurvey = surveys.stream().
 									filter(predicate).findFirst();
@@ -50,5 +48,19 @@ public class SurveyService {
 	public List<Question> retrieveSurveyQuestions(String surveyId) {
 		Survey survey = retrieveSurveyById(surveyId);
 		return survey.getQuestions();
+	}
+
+	public Question retrieveSurveyQuestionById(String surveyId, String questionId) {
+		List<Question> questions = retrieveSurveyQuestions(surveyId);
+		
+		Predicate<? super Question> predicate = 
+				question -> question.getId().equalsIgnoreCase(questionId);
+		Optional<Question> optionalQuestion = questions.stream().filter(predicate).findFirst();
+		
+		if(optionalQuestion.isEmpty()) {
+			return null;
+		}
+		
+		return optionalQuestion.get();
 	}
 }

@@ -37,4 +37,10 @@ public class SurveyResource {
 			@PathVariable String surveyId){
 		return surveyService.retrieveSurveyQuestions(surveyId);
 	}
+	
+	@RequestMapping("/surveys/{surveyId}/questions/{questionId}")
+	public Question retrieveSurveyQuestionById(
+			@PathVariable String surveyId, @PathVariable String questionId){
+		return surveyService.retrieveSurveyQuestionById(surveyId, questionId);
+	}
 }
