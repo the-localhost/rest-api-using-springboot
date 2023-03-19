@@ -1,5 +1,7 @@
 package com.learn.springboot.firstrestapi.user;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
@@ -22,8 +24,11 @@ public class UserDetailsCommandLineRunner implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		repository.save(new UserDetails("Gagan", "Admin"));
 		repository.save(new UserDetails("Amit", "Admin"));
-		repository.save(new UserDetails("Chirag", "Admin"));
+		repository.save(new UserDetails("Chirag", "User"));
 		
+		List<UserDetails> admins = repository.findByRole("Admin");
+		
+		admins.forEach(admin -> logger.info(admin.toString()));
 	}
 
 }
