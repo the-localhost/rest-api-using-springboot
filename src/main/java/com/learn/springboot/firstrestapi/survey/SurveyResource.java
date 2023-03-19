@@ -37,7 +37,7 @@ public class SurveyResource {
 		return survey;
 	}
 
-	@RequestMapping(value="/surveys/{surveyId}/questions", method = RequestMethod.GET)
+	@RequestMapping(value = "/surveys/{surveyId}/questions", method = RequestMethod.GET)
 	public List<Question> retrieveSurveyQuestions(@PathVariable String surveyId) {
 		List<Question> questions = surveyService.retrieveSurveyQuestions(surveyId);
 		if (questions == null) {
@@ -47,7 +47,7 @@ public class SurveyResource {
 		return questions;
 	}
 
-	@RequestMapping("/surveys/{surveyId}/questions/{questionId}")
+	@RequestMapping(value = "/surveys/{surveyId}/questions/{questionId}", method = RequestMethod.GET)
 	public Question retrieveSurveyQuestionById(@PathVariable String surveyId, @PathVariable String questionId) {
 		Question questionById = surveyService.retrieveSurveyQuestionById(surveyId, questionId);
 
@@ -57,16 +57,23 @@ public class SurveyResource {
 
 		return questionById;
 	}
-	
-	@RequestMapping(value="/surveys/{surveyId}/questions", method = RequestMethod.POST)
-	public ResponseEntity<Object> addNewSurveyQuestion(@PathVariable String surveyId,
-											@RequestBody Question question) {
-		
-		
-		
+
+	@RequestMapping(value = "/surveys/{surveyId}/questions", method = RequestMethod.POST)
+	public ResponseEntity<Object> addNewSurveyQuestion(@PathVariable String surveyId, @RequestBody Question question) {
+
 		String questionId = surveyService.addNewSurveyQuestion(surveyId, question);
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-				.path("/{questionId}").buildAndExpand(questionId ).toUri();
-		return ResponseEntity.created(location ).build();
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{questionId}").buildAndExpand(questionId)
+				.toUri();
+		return ResponseEntity.created(location).build();
+	}
+
+	@RequestMapping(value = "/surveys/{surveyId}/questions/{questionId}", method = RequestMethod.DELETE)
+	public ResponseEntity<Object> deleteSurveyQuestionById(@PathVariable String surveyId,
+			@PathVariable String questionId) {
+		String deletedQuestionId = surveyService.deleteSurveyQuestionById(surveyId, questionId);
+		if (deletedQuestionId == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		}
+		return ResponseEntity.noContent().build();
 	}
 }
