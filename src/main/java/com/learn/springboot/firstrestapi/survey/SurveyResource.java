@@ -76,4 +76,17 @@ public class SurveyResource {
 		}
 		return ResponseEntity.noContent().build();
 	}
+
+	@RequestMapping(value = "/surveys/{surveyId}/questions/{questionId}", method = RequestMethod.PUT)
+	public ResponseEntity<Object> updateSurveyQuestionById(@PathVariable String surveyId,
+			@PathVariable String questionId, @RequestBody Question question) {
+		String updatedQuestionId = surveyService.updateSurveyQuestionById(surveyId, questionId, question);
+		if (updatedQuestionId == null) {
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+		}
+
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{updatedQuestionId}")
+				.buildAndExpand(updatedQuestionId).toUri();
+		return ResponseEntity.created(location).build();
+	}
 }

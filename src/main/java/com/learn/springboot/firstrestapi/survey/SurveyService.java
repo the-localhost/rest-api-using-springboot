@@ -95,4 +95,22 @@ public class SurveyService {
 		
 		return questionId;
 	}
+
+	public String updateSurveyQuestionById(String surveyId, String questionId, Question questionUpdate) {
+		List<Question> questions = retrieveSurveyQuestions(surveyId);
+		Predicate<? super Question> predicate = 
+				question -> question.getId().equalsIgnoreCase(questionId);
+		boolean isQuestionRemoved = questions.removeIf(predicate);
+		
+		if(!isQuestionRemoved) {
+			// this mean the question was not present in the first place
+			// and hence, can't be updated
+			// we may want to call addNewSurveyQuestion here
+			return null;
+		}
+		
+		questionUpdate.setId(questionId);
+		questions.add(questionUpdate);
+		return questionId;
+	}
 }
