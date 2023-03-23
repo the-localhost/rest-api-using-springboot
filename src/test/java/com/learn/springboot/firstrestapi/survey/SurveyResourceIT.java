@@ -1,5 +1,8 @@
 package com.learn.springboot.firstrestapi.survey;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.json.JSONException;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -39,8 +42,9 @@ public class SurveyResourceIT {
 				"description":"Most Popular Cloud Platform Today",
 				"correctAnswer":"AWS"}
 				""";
+		
+		assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
+		assertEquals("application/json", responseEntity.getHeaders().get("Content-Type").get(0));
 		JSONAssert.assertEquals(expectedResponse, responseEntity.getBody(), false);
-		System.out.println(responseEntity.getBody());
-		System.out.println(responseEntity.getHeaders());
 	}
 }
