@@ -34,6 +34,8 @@ public class SurveyResourceIT {
 	
 	private static String SPECIFIC_QUESTION_URL = "/surveys/Survey1/questions/Question1";
 	
+	private static String ALL_QUESTIONS_URL = "/surveys/Survey1/questions";
+	
 	@Test
 	void retrieveSurveyQuestionById_basicScenario() throws JSONException{
 		ResponseEntity<String> responseEntity = template.getForEntity(SPECIFIC_QUESTION_URL, String.class);
@@ -46,5 +48,37 @@ public class SurveyResourceIT {
 		assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
 		assertEquals("application/json", responseEntity.getHeaders().get("Content-Type").get(0));
 		JSONAssert.assertEquals(expectedResponse, responseEntity.getBody(), false);
+	}
+	
+	@Test
+	void retrieveAllSurveyQuestions_basicScenario() throws JSONException{
+		ResponseEntity<String> responseEntity = template.getForEntity(ALL_QUESTIONS_URL, String.class);
+		String expectedResponse = """
+				[
+					{
+						"id":"Question1",
+						"description":"Most Popular Cloud Platform Today",
+						"options":["AWS","Azure","Google Cloud","Oracle Cloud"],
+						"correctAnswer":"AWS"
+					},
+					{
+						"id":"Question2",
+						"description":"Fastest Growing Cloud Platform",
+						"options":["AWS","Azure","Google Cloud","Oracle Cloud"],
+						"correctAnswer":"Google Cloud"
+					},
+					{
+						"id":"Question3",
+						"description":"Most Popular DevOps Tool",
+						"options":["Kubernetes","Docker","Terraform","Azure DevOps"],
+						"correctAnswer":"Kubernetes"
+					}
+				]
+				""";
+		
+		assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
+		assertEquals("application/json", responseEntity.getHeaders().get("Content-Type").get(0));
+		JSONAssert.assertEquals(expectedResponse, responseEntity.getBody(), false);
+//		System.out.println(responseEntity.getBody());
 	}
 }
