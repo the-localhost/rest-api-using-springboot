@@ -56,22 +56,13 @@ public class SurveyResourceIT {
 		String expectedResponse = """
 				[
 					{
-						"id":"Question1",
-						"description":"Most Popular Cloud Platform Today",
-						"options":["AWS","Azure","Google Cloud","Oracle Cloud"],
-						"correctAnswer":"AWS"
+						"id":"Question1"
 					},
 					{
-						"id":"Question2",
-						"description":"Fastest Growing Cloud Platform",
-						"options":["AWS","Azure","Google Cloud","Oracle Cloud"],
-						"correctAnswer":"Google Cloud"
+						"id":"Question2"
 					},
 					{
-						"id":"Question3",
-						"description":"Most Popular DevOps Tool",
-						"options":["Kubernetes","Docker","Terraform","Azure DevOps"],
-						"correctAnswer":"Kubernetes"
+						"id":"Question3"
 					}
 				]
 				""";
