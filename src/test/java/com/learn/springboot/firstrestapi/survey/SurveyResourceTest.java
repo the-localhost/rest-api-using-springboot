@@ -3,7 +3,9 @@ package com.learn.springboot.firstrestapi.survey;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -19,6 +21,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @WebMvcTest(controllers = SurveyResource.class)
 public class SurveyResourceTest {
 	
+	private static String ALL_QUESTION_url = 
+			"http://localhost:8080/surveys/Survey1/questions";
+
 	@MockBean
 	private SurveyService surveyService;
 	
@@ -58,6 +63,66 @@ public class SurveyResourceTest {
 				""";
 		
 		when(surveyService.retrieveSurveyQuestionById("Survey1", "Question1")).thenReturn(question);
+		
+		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+		
+		JSONAssert.assertEquals(expectedResponse, mvcResult.getResponse().getContentAsString(), false);
+		assertEquals(200, mvcResult.getResponse().getStatus());
+	}
+	
+	@Test
+	void retrieveSurveyQuestions_basicScenario() throws Exception {
+		RequestBuilder requestBuilder = 
+				MockMvcRequestBuilders.get(ALL_QUESTION_url).accept(MediaType.APPLICATION_JSON);
+		
+		Question question1 = new Question("Question1", "Most Popular Cloud Platform Today",
+				Arrays.asList("AWS", "Azure", "Google Cloud", "Oracle Cloud"), "AWS");
+		Question question2 = new Question("Question2", "Fastest Growing Cloud Platform",
+				Arrays.asList("AWS", "Azure", "Google Cloud", "Oracle Cloud"), "Google Cloud");
+		Question question3 = new Question("Question3", "Most Popular DevOps Tool",
+				Arrays.asList("Kubernetes", "Docker", "Terraform", "Azure DevOps"), "Kubernetes");
+
+		List<Question> questions = new ArrayList<>(Arrays.asList(question1, question2, question3));
+		
+		String expectedResponse = """
+				[
+					{
+						id: "Question1",
+						description: "Most Popular Cloud Platform Today",
+						options: [
+							"AWS",
+							"Azure",
+							"Google Cloud",
+							"Oracle Cloud"
+						],
+						correctAnswer: "AWS"
+					},
+					{
+						id: "Question2",
+						description: "Fastest Growing Cloud Platform",
+						options: [
+							"AWS",
+							"Azure",
+							"Google Cloud",
+							"Oracle Cloud"
+						],
+						correctAnswer: "Google Cloud"
+					},
+					{
+						id: "Question3",
+						description: "Most Popular DevOps Tool",
+						options: [
+							"Kubernetes",
+							"Docker",
+							"Terraform",
+							"Azure DevOps"
+						],
+						correctAnswer: "Kubernetes"
+					}
+				]
+				""";
+		
+		when(surveyService.retrieveSurveyQuestions("Survey1")).thenReturn(questions);
 		
 		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 		
