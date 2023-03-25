@@ -24,15 +24,15 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 @WebMvcTest(controllers = SurveyResource.class)
 public class SurveyResourceTest {
-	
-	private static String ALL_QUESTION_URL = 
-			"http://localhost:8080/surveys/Survey1/questions";
 
 	@MockBean
 	private SurveyService surveyService;
 	
 	@Autowired
 	private MockMvc mockMvc;
+	
+	private static String ALL_QUESTION_URL = 
+			"http://localhost:8080/surveys/Survey1/questions";
 	
 	private static String SPECIFIC_QUESTION_url = 
 			"http://localhost:8080/surveys/Survey1/questions/Question1";
