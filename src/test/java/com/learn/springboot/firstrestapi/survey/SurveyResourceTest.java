@@ -1,6 +1,9 @@
 package com.learn.springboot.firstrestapi.survey;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -13,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -21,7 +25,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @WebMvcTest(controllers = SurveyResource.class)
 public class SurveyResourceTest {
 	
-	private static String ALL_QUESTION_url = 
+	private static String ALL_QUESTION_URL = 
 			"http://localhost:8080/surveys/Survey1/questions";
 
 	@MockBean
@@ -66,14 +70,16 @@ public class SurveyResourceTest {
 		
 		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 		
-		JSONAssert.assertEquals(expectedResponse, mvcResult.getResponse().getContentAsString(), false);
-		assertEquals(200, mvcResult.getResponse().getStatus());
+		MockHttpServletResponse response = mvcResult.getResponse();
+		
+		JSONAssert.assertEquals(expectedResponse, response.getContentAsString(), false);
+		assertEquals(200, response.getStatus());
 	}
 	
 	@Test
 	void retrieveSurveyQuestions_basicScenario() throws Exception {
 		RequestBuilder requestBuilder = 
-				MockMvcRequestBuilders.get(ALL_QUESTION_url).accept(MediaType.APPLICATION_JSON);
+				MockMvcRequestBuilders.get(ALL_QUESTION_URL).accept(MediaType.APPLICATION_JSON);
 		
 		Question question1 = new Question("Question1", "Most Popular Cloud Platform Today",
 				Arrays.asList("AWS", "Azure", "Google Cloud", "Oracle Cloud"), "AWS");
@@ -126,7 +132,39 @@ public class SurveyResourceTest {
 		
 		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
 		
-		JSONAssert.assertEquals(expectedResponse, mvcResult.getResponse().getContentAsString(), false);
-		assertEquals(200, mvcResult.getResponse().getStatus());
+		MockHttpServletResponse response = mvcResult.getResponse();
+		
+		JSONAssert.assertEquals(expectedResponse, response.getContentAsString(), false);
+		assertEquals(200, response.getStatus());
+	}
+	
+	@Test
+	void addNewServeyQuestion_basicScenario() throws Exception {
+		String requestBody = """
+				{
+				    "description": "Most Popular PlatEng Tool",
+				    "options": [
+				        "Kubernetes",
+				        "Docker",
+				        "Terraform",
+				        "Azure DevOps"
+				    ],
+				    "correctAnswer": "Kubernetes"
+				}
+				""";
+		
+		when(surveyService.addNewSurveyQuestion(anyString(), any()))
+				.thenReturn("SOME_ID");
+		
+		RequestBuilder requestBuilder = MockMvcRequestBuilders.post(ALL_QUESTION_URL)
+				.accept(MediaType.APPLICATION_JSON)
+				.content(requestBody).contentType(MediaType.APPLICATION_JSON);
+		
+		MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+		
+		MockHttpServletResponse response = mvcResult.getResponse();
+		
+		assertEquals(201, response.getStatus());
+		assertTrue(response.getHeader("Location").contains("/surveys/Survey1/questions/SOME_ID"));
 	}
 }
